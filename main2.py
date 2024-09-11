@@ -24,7 +24,7 @@ def perform_morphological_operations(mask):
     mask = cv2.dilate(mask, kernel, iterations=1)  
     return mask  
 
-def find_and_draw_contours(image, mask, z_value):  
+def find_and_draw_contours(image, mask):  
     """Find contours in the mask, draw them on the image, and annotate with coordinates."""  
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 500]  # Increased area threshold  
@@ -40,7 +40,7 @@ def find_and_draw_contours(image, mask, z_value):
             cX = int(M["m10"] / M["m00"])  
             cY = int(M["m01"] / M["m00"])  
             # Annotate with the centroid coordinates  
-            cv2.putText(image, f"({cX}, {cY}, {z_value})", (cX, cY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)  
+            cv2.putText(image, f"({cX}, {cY})", (cX, cY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)  
         
     return filtered_contours  
 
@@ -61,7 +61,7 @@ def edge_detection(image):
     edges = cv2.Canny(gray_image, 100, 200)  # Perform Canny edge detection  
     return edges  
 
-def main(file_path, lower_hue, upper_hue, z_value):  
+def main(file_path, lower_hue, upper_hue):  
     """Main function to load an image, detect objects, and save/display the result."""  
     image = load_image(file_path)  
     if image is not None:  
@@ -77,15 +77,15 @@ def main(file_path, lower_hue, upper_hue, z_value):
         cv2.imshow("Edges", edges)  
         cv2.waitKey(0)  
         
-        contours = find_and_draw_contours(image, mask, z_value)  
+        contours = find_and_draw_contours(image, mask)  
         
         centroids = get_centroids(contours)  
         
         for idx, (x, y) in enumerate(centroids):  
-            print(f"Contour {idx + 1}: Centroid at (x: {x} pixels, y: {y} pixels, z: {z_value} units)")  
+            print(f"Contour {idx + 1}: Centroid at (x: {x} pixels, y: {y} pixels)")  
         
         # Save the result image  
-        output_file_path = 'E:/saffronImageProcess/Detected_Saffron_Flowers.jpg'  
+        output_file_path = 'E:/saffronImageProcess/Out/Detected_Saffron_Flowers.jpg'  
         cv2.imwrite(output_file_path, image)  
         print(f"Output image saved to {output_file_path}")  
 
@@ -93,8 +93,5 @@ def main(file_path, lower_hue, upper_hue, z_value):
 saffron_lower_hue = np.array([120, 100, 100])  # Adjust these values  
 saffron_upper_hue = np.array([140, 255, 255])  # Adjust these values  
 
-# Define a constant z-value (you can adjust this based on your context)  
-z_value = 10  # Example z-coordinate in arbitrary units  
-
 # Call the main function for saffron  
-main('E:/saffronImageProcess/OIP.jpg', saffron_lower_hue, saffron_upper_hue, z_value)
+main('E:/saffronImageProcess/Source/OIP.jpg', saffron_lower_hue, saffron_upper_hue)

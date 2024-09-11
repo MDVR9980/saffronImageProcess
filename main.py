@@ -75,7 +75,7 @@ def main(file_path, lower_hue, upper_hue, z_value):
             print(f"Contour {idx + 1}: Centroid at (x: {x} pixels, y: {y} pixels, z: {z_value} units)")  
         
         # Save the result image  
-        output_file_path = 'E:/saffronImageProcess/Detected_Saffron_Flowers.jpg'  
+        output_file_path = 'E:/saffronImageProcess/Out/Detected_Saffron_Flowers.jpg'  
         cv2.imwrite(output_file_path, image)  
         print(f"Output image saved to {output_file_path}")  
 
@@ -87,4 +87,4 @@ saffron_upper_hue = np.array([140, 255, 255])  # Adjust these values
 z_value = 10  # Example z-coordinate in arbitrary units  
 
 # Call the main function for saffron  
-main('E:/saffronImageProcess/R.jpg', saffron_lower_hue, saffron_upper_hue, z_value)
+main('E:/saffronImageProcess/Source/R.jpg', saffron_lower_hue, saffron_upper_hue, z_value)

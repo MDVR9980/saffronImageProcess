@@ -21,7 +21,7 @@ def rgb_to_hsi(image):
         return cv2.merge([H, S, I])
 
 # بارگذاری تصویر
-image = cv2.imread('E:/saffronImageProcess/OIP.jpg')
+image = cv2.imread('E:/saffronImageProcess/Source/OIP.jpg')
 
 # پیش‌پردازش تصویر: افزایش کنتراست
 image_lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
@@ -88,4 +88,4 @@ plt.axis('off')
 plt.show()
 
 # ذخیره تصویر نهایی در فایل
-cv2.imwrite('E:/saffronImageProcess/Detected_Saffron_Flowers.jpg', output)
+cv2.imwrite('E:/saffronImageProcess/Out/Detected_Saffron_Flowers.jpg', output)

@@ -118,9 +118,9 @@ def main(file_path, depth_map_path):
         combined_image = cv2.addWeighted(image, 0.8, cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.2, 0)  
         
         # Save the result image  
-        output_file_path = 'E:/Saffron/Detected_Saffron_Flowers_Enhanced.jpg'  
+        output_file_path = 'E:/saffronImageProcess/Out/Detected_Saffron_Flowers_Enhanced.jpg'  
         cv2.imwrite(output_file_path, combined_image)  
         print(f"Output image saved to {output_file_path}")  
 
 # Example usage  
-main('E:/Saffron/R.jpg', 'E:/Saffron/depth_map.jpg')
+main('E:/saffronImageProcess/Source/R.jpg', 'E:/saffronImageProcess/Source/depth_map.jpg')
