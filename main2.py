@@ -55,6 +55,12 @@ def get_centroids(contours):
             centroids.append((cX, cY))  
     return centroids  
 
+def edge_detection(image):  
+    """Perform edge detection using Canny algorithm."""  
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convert to grayscale  
+    edges = cv2.Canny(gray_image, 100, 200)  # Perform Canny edge detection  
+    return edges  
+
 def main(file_path, lower_hue, upper_hue, z_value):  
     """Main function to load an image, detect objects, and save/display the result."""  
     image = load_image(file_path)  
@@ -63,8 +69,12 @@ def main(file_path, lower_hue, upper_hue, z_value):
         mask = create_mask(hsi_image, lower_hue, upper_hue)  
         mask = perform_morphological_operations(mask)  
         
-        # Visualize the mask (optional)  
+        # Perform edge detection  
+        edges = edge_detection(image)  
+        
+        # Visualize the mask and edges (optional)  
         cv2.imshow("Mask", mask)  
+        cv2.imshow("Edges", edges)  
         cv2.waitKey(0)  
         
         contours = find_and_draw_contours(image, mask, z_value)  
@@ -87,4 +97,4 @@ saffron_upper_hue = np.array([140, 255, 255])  # Adjust these values
 z_value = 10  # Example z-coordinate in arbitrary units  
 
 # Call the main function for saffron  
-main('E:/saffronImageProcess/R.jpg', saffron_lower_hue, saffron_upper_hue, z_value)
+main('E:/saffronImageProcess/OIP.jpg', saffron_lower_hue, saffron_upper_hue, z_value)
