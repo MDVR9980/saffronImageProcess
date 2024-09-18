@@ -40,11 +40,10 @@ def draw_group(image, contours):
     y_max = max(cv2.boundingRect(cnt)[1] + cv2.boundingRect(cnt)[3] for cnt in contours)  
 
     cv2.rectangle(image, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)  # Green rectangle  
-    count = len(contours)  
     centroid_x = (x_min + x_max) // 2  
     centroid_y = (y_min + y_max) // 2  
 
-    cv2.putText(image, f"Count: {count}", (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)  
+    # فقط مختصات مرکز را نمایش می‌دهیم  
     cv2.putText(image, f"Centroid: ({centroid_x}, {centroid_y})", (centroid_x, centroid_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)  
 
 def main(file_path, lower_hue, upper_hue):  
@@ -68,4 +67,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range  
 
 # Call the main function for saffron  
-main('E:/saffronImageProcess/Source/3.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/11.jpg', saffron_lower_hue, saffron_upper_hue)
