@@ -25,22 +25,35 @@ def perform_morphological_operations(mask):
     return mask
 
 def find_and_draw_groups(image, mask, max_group_size=400):
-    """Find contours and draw bounding boxes around grouped flowers."""
+    """Find contours and draw bounding boxes around grouped flowers without overlap."""
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 300]  # Minimum area filter
 
     # Divide image into smaller blocks
     h, w = image.shape[:2]
+    occupied_blocks = []  # Store blocks that are already used
     group_id = 1
-    for y in range(0, h, max_group_size):
-        for x in range(0, w, max_group_size):
-            # Extract region of interest (ROI) for the current block
-            roi_contours = [cnt for cnt in filtered_contours if cv2.boundingRect(cnt)[0] >= x and cv2.boundingRect(cnt)[0] < x + max_group_size and cv2.boundingRect(cnt)[1] >= y and cv2.boundingRect(cnt)[1] < y + max_group_size]
-            
-            # If contours exist in the current block
-            if roi_contours:
-                draw_group(image, roi_contours, group_id)
-                group_id += 1
+    
+    for cnt in filtered_contours:
+        # Calculate bounding box for each contour
+        x, y, width, height = cv2.boundingRect(cnt)
+        
+        # Calculate block boundaries
+        x_start = (x // max_group_size) * max_group_size
+        y_start = (y // max_group_size) * max_group_size
+
+        # Check if this block overlaps with any existing blocks
+        overlap = False
+        for (bx, by) in occupied_blocks:
+            if (bx < x + width and bx + max_group_size > x) and (by < y + height and by + max_group_size > y):
+                overlap = True
+                break
+        
+        # If no overlap, add block and draw group
+        if not overlap:
+            occupied_blocks.append((x_start, y_start))
+            draw_group(image, [cnt], group_id)
+            group_id += 1
 
 def draw_group(image, contours, group_id):
     """Draw a bounding box around all contours in a group and annotate with group ID."""
@@ -64,7 +77,7 @@ def main(file_path, lower_hue, upper_hue):
         mask = create_mask(hsi_image, lower_hue, upper_hue)
         mask = perform_morphological_operations(mask)
 
-        # Detect and group saffron flowers
+        # Detect and group saffron flowers without overlap
         find_and_draw_groups(image, mask)
 
         output_file_path = 'E:/saffronImageProcess/Grouped_Saffron_Flowers.jpg'
@@ -78,4 +91,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range
 
 # Call the main function for saffron
-main('E:/saffronImageProcess/Source/10.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/11.jpg', saffron_lower_hue, saffron_upper_hue)
