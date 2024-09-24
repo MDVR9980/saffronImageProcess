@@ -67,4 +67,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range  
 
 # Call the main function for saffron  
-main('E:/saffronImageProcess/Source/R.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/10.jpg', saffron_lower_hue, saffron_upper_hue)
