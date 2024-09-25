@@ -30,7 +30,7 @@ def calculate_distance(rect1, rect2):
     center2 = ((rect2[0] + rect2[2] // 2), (rect2[1] + rect2[3] // 2))
     return np.sqrt((center1[0] - center2[0]) ** 2 + (center1[1] - center2[1]) ** 2)
 
-def find_and_draw_groups(image, mask, max_group_size=1000, overlap_threshold=500):
+def find_and_draw_groups(image, mask, overlap_threshold=200):
     """Find contours and draw bounding boxes around grouped flowers."""
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 300]  # Minimum area filter
@@ -104,4 +104,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range
 
 # Call the main function for saffron
-main('E:/saffronImageProcess/Source/10.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/2.jpg', saffron_lower_hue, saffron_upper_hue)
