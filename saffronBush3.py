@@ -24,36 +24,49 @@ def perform_morphological_operations(mask):
     mask = cv2.dilate(mask, kernel, iterations=1)
     return mask
 
-def find_and_draw_groups(image, mask, max_group_size=400):
-    """Find contours and draw bounding boxes around grouped flowers without overlap."""
+def calculate_distance(rect1, rect2):
+    """Calculate distance between two rectangles (bounding boxes)."""
+    center1 = ((rect1[0] + rect1[2] // 2), (rect1[1] + rect1[3] // 2))
+    center2 = ((rect2[0] + rect2[2] // 2), (rect2[1] + rect2[3] // 2))
+    return np.sqrt((center1[0] - center2[0]) ** 2 + (center1[1] - center2[1]) ** 2)
+
+def find_and_draw_groups(image, mask, max_group_size=1000, overlap_threshold=500):
+    """Find contours and draw bounding boxes around grouped flowers."""
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 300]  # Minimum area filter
 
-    # Divide image into smaller blocks
-    h, w = image.shape[:2]
-    occupied_blocks = []  # Store blocks that are already used
+    # List to hold bounding boxes of detected groups
+    group_boxes = []
     group_id = 1
-    
-    for cnt in filtered_contours:
-        # Calculate bounding box for each contour
-        x, y, width, height = cv2.boundingRect(cnt)
-        
-        # Calculate block boundaries
-        x_start = (x // max_group_size) * max_group_size
-        y_start = (y // max_group_size) * max_group_size
 
-        # Check if this block overlaps with any existing blocks
-        overlap = False
-        for (bx, by) in occupied_blocks:
-            if (bx < x + width and bx + max_group_size > x) and (by < y + height and by + max_group_size > y):
-                overlap = True
+    # Iterate through contours and group them based on bounding box overlap
+    for cnt in filtered_contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        new_group = True
+
+        # Check for overlap with existing group boxes
+        for group in group_boxes:
+            group_rect = group['rect']
+            if calculate_distance((x, y, w, h), group_rect) < overlap_threshold:
+                # Merge with existing group
+                group['contours'].append(cnt)
+                group['rect'] = (min(group_rect[0], x), 
+                                 min(group_rect[1], y), 
+                                 max(group_rect[0] + group_rect[2], x + w) - min(group_rect[0], x), 
+                                 max(group_rect[1] + group_rect[3], y + h) - min(group_rect[1], y))
+                new_group = False
                 break
-        
-        # If no overlap, add block and draw group
-        if not overlap:
-            occupied_blocks.append((x_start, y_start))
+
+        if new_group:
+            # Create a new group
+            group_boxes.append({'rect': (x, y, w, h), 'contours': [cnt]})
             draw_group(image, [cnt], group_id)
             group_id += 1
+
+    # Draw updated groups after merging
+    for group in group_boxes:
+        draw_group(image, group['contours'], group_id)
+        group_id += 1
 
 def draw_group(image, contours, group_id):
     """Draw a bounding box around all contours in a group and annotate with group ID."""
@@ -77,10 +90,10 @@ def main(file_path, lower_hue, upper_hue):
         mask = create_mask(hsi_image, lower_hue, upper_hue)
         mask = perform_morphological_operations(mask)
 
-        # Detect and group saffron flowers without overlap
+        # Detect and group saffron flowers
         find_and_draw_groups(image, mask)
 
-        output_file_path = 'E:/saffronImageProcess/Grouped_Saffron_Flowers.jpg'
+        output_file_path = 'E:/saffronImageProcess/Grouped_Saffron_Flowers_NoOverlap.jpg'
         cv2.imwrite(output_file_path, image)
         print(f"Output image saved to {output_file_path}")
     except Exception as e:
@@ -91,4 +104,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range
 
 # Call the main function for saffron
-main('E:/saffronImageProcess/Source/11.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/10.jpg', saffron_lower_hue, saffron_upper_hue)

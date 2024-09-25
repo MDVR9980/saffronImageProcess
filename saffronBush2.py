@@ -24,7 +24,7 @@ def perform_morphological_operations(mask):
     mask = cv2.dilate(mask, kernel, iterations=1)
     return mask
 
-def find_and_draw_groups(image, mask, max_group_size=400):
+def find_and_draw_groups(image, mask, max_group_size=1000):
     """Find contours and draw bounding boxes around grouped flowers."""
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 300]  # Minimum area filter
