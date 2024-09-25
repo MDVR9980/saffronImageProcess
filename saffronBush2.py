@@ -24,10 +24,10 @@ def perform_morphological_operations(mask):
     mask = cv2.dilate(mask, kernel, iterations=1)
     return mask
 
-def find_and_draw_groups(image, mask, max_group_size=900):
+def find_and_draw_groups(image, mask, max_group_size=700):
     """Find contours and draw bounding boxes around grouped flowers."""
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 500]  # Minimum area filter
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 400]  # Minimum area filter
 
     # Divide image into smaller blocks
     h, w = image.shape[:2]
@@ -78,4 +78,4 @@ saffron_lower_hue = np.array([120, 100, 100])  # Adjusted lower hue range
 saffron_upper_hue = np.array([140, 255, 255])  # Adjusted upper hue range
 
 # Call the main function for saffron
-main('E:/saffronImageProcess/Source/R.jpg', saffron_lower_hue, saffron_upper_hue)
+main('E:/saffronImageProcess/Source/7.jpg', saffron_lower_hue, saffron_upper_hue)
