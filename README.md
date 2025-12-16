@@ -2,7 +2,7 @@
 
 A computer vision project to automatically detect **saffron flowers** in agricultural images using image processing techniques.
 
-![Saffron Example](https://raw.githubusercontent.com/MDVR9980/saffronImageProcess/main/sample_output.jpg)
+![Saffron Example](https://github.com/MDVR9980/saffronImageProcess/blob/main/Out/Grouped_Saffron_Flowers.jpg)
 
 ---
 
